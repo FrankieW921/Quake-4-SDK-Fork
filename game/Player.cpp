@@ -1079,6 +1079,9 @@ idPlayer::idPlayer
 idPlayer::idPlayer() {
 	memset( &usercmd, 0, sizeof( usercmd ) );
 
+	//fgw, combo count var
+	combo = 0;
+
 	alreadyDidTeamAnnouncerSound = false;
 
 	doInitWeapon			= false;
@@ -3343,6 +3346,23 @@ bool idPlayer::UserInfoChanged( void ) {
 	return modifiedInfo;
 }
    
+/*
+fgw
+idPlayer::UpdateHUDCombo
+*/
+void idPlayer::UpdateHudCombo(idUserInterface* _hud) {
+	int combo;
+
+	assert(_hud);
+
+	combo = CurrentCombo();
+
+
+}
+int idPlayer::CurrentCombo() {
+	return combo;
+}
+
 /*
 ===============
 idPlayer::UpdateHudAmmo

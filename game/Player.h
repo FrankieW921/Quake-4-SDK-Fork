@@ -196,6 +196,7 @@ class idInventory {
 public:
 	int						maxHealth;
 	int						weapons;
+
 // RITUAL BEGIN
 // squirrel: Mode-agnostic buymenus
 	int						carryOverWeapons;
@@ -427,6 +428,8 @@ public:
 
 public:
 	CLASS_PROTOTYPE( idPlayer );
+	//fgw, combo count
+	int combo;
 
 							idPlayer();
 	virtual					~idPlayer();
@@ -640,6 +643,11 @@ public:
 	void					ResetHUDWeaponSwitch( void );
 #endif
 	void					UpdateHudStats( idUserInterface *hud );
+//fgw
+//combo related definitions
+	void UpdateHudCombo(idUserInterface* hud);
+	int	CurrentCombo();
+
  	void					UpdateHudAmmo( idUserInterface *hud );
  	void					ShowTip( const char *title, const char *tip, bool autoHide );
  	void					HideTip( void );
