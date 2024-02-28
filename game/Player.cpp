@@ -3380,6 +3380,25 @@ void idPlayer::IncrementCombo() {
 	}
 
 	//implement getting a buff/power up upon hitting a combo score
+	if (combo == 1) {
+		health += 5;
+	}
+	if (combo == 2) {
+		GivePowerUp(POWERUP_HASTE, 5, false);
+		UpdatePowerUps();
+	}
+	if (combo == 3) {
+		GivePowerUp(POWERUP_INVISIBILITY, 5, false);
+		UpdatePowerUps();
+	}
+	if (combo == 4) {
+		GivePowerUp(POWERUP_AMMOREGEN, 2, false);
+		UpdatePowerUps();
+	}
+	if (combo == 5) {
+		GivePowerUp(POWERUP_QUADDAMAGE, 10, false);
+		UpdatePowerUps();
+	}
 
 	UpdateHudCombo(hud);
 }
@@ -3389,7 +3408,12 @@ void idPlayer::ResetCombo() {
 	combo = 0;
 
 	//implement removal of powerups
-
+	ClearPowerup(2);
+	ClearPowerup(1);
+	ClearPowerup(3);
+	ClearPowerup(7);
+	ClearPowerup(0);
+	UpdatePowerUps();
 
 	UpdateHudCombo(hud);
 }
@@ -10126,6 +10150,25 @@ void idPlayer::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 	if ( !gameLocal.isMultiplayer ) {
 		if ( inflictor != gameLocal.world ) {
 			modifiedDamageScale *= ( 1.0f + gameLocal.GetDifficultyModifier() );
+
+			//fgw, implementation of getting debuffed since this if statement is the determiner
+			//of if you were hit by an enemy
+			int randomInt = rand() % 5 + 1;
+			if (randomInt == 1) {
+				ResetCombo(); 
+			}
+			else if (randomInt == 2) {
+
+			}
+			else if (randomInt == 3) {
+
+			}
+			else if (randomInt == 4) {
+
+			}
+			else if (randomInt == 5) {
+
+			}
 		}
 	}
 	// RAVEN END
