@@ -2509,6 +2509,10 @@ void idActor::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &dir
 				}
 			}
 			Killed( inflictor, attacker, damage, dir, location );
+			//fgw, when an enemy dies, increment combo count
+			gameLocal.GetLocalPlayer()->IncrementCombo();
+
+
 			gibbed = saveGibbed;
 			if ( health < -20 )
 			{

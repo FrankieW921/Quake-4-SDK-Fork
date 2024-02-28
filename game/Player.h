@@ -281,6 +281,9 @@ public:
  		EVENT_MAXEVENTS
  	};
 
+	//fgw, combo declaration
+	int combo;
+
 	friend class idThread;
 
 	usercmd_t				usercmd;
@@ -428,8 +431,6 @@ public:
 
 public:
 	CLASS_PROTOTYPE( idPlayer );
-	//fgw, combo count
-	int combo;
 
 							idPlayer();
 	virtual					~idPlayer();
@@ -642,12 +643,14 @@ public:
 #ifdef _XENON
 	void					ResetHUDWeaponSwitch( void );
 #endif
-	void					UpdateHudStats( idUserInterface *hud );
-//fgw
-//combo related definitions
+
+	//fgw, combo function declarations
 	void UpdateHudCombo(idUserInterface* hud);
 	int	CurrentCombo();
+	void IncrementCombo();
+	void ResetCombo();
 
+	void					UpdateHudStats( idUserInterface *hud );
  	void					UpdateHudAmmo( idUserInterface *hud );
  	void					ShowTip( const char *title, const char *tip, bool autoHide );
  	void					HideTip( void );

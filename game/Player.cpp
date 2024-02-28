@@ -3348,6 +3348,9 @@ bool idPlayer::UserInfoChanged( void ) {
    
 /*
 fgw
+______________________
+COMBO RELATED FUNCTIONS
+_______________________
 idPlayer::UpdateHUDCombo
 */
 void idPlayer::UpdateHudCombo(idUserInterface* _hud) {
@@ -3355,13 +3358,42 @@ void idPlayer::UpdateHudCombo(idUserInterface* _hud) {
 
 	assert(_hud);
 
-	combo = CurrentCombo();
+	combo = CurrentCombo(); 
+
+	_hud->SetStateInt("player_combo", combo);
 
 
 }
+//returns current combo count
 int idPlayer::CurrentCombo() {
 	return combo;
 }
+
+//increments combo count and gives a buff/power up when hitting a certain combo value
+void idPlayer::IncrementCombo() {
+	if (combo >= 5) {
+
+	}
+	else {
+		combo = combo + 1;
+		gameLocal.Printf("combo: %f", combo);
+	}
+
+	//implement getting a buff/power up upon hitting a combo score
+
+	UpdateHudCombo(hud);
+}
+
+//resets combo, one of the debuffs you can recieve upon being hit
+void idPlayer::ResetCombo() {
+	combo = 0;
+
+	//implement removal of powerups
+
+
+	UpdateHudCombo(hud);
+}
+
 
 /*
 ===============
