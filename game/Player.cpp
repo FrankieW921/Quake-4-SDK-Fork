@@ -3387,20 +3387,19 @@ void idPlayer::IncrementCombo() {
 		health += 5;
 	}
 	if (combo == 2) {
-		//inventory.GivePowerUp(gameLocal.GetLocalPlayer(), );
-		GivePowerUp(POWERUP_HASTE, 5, false);
+		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_HASTE, 5000);
 		UpdatePowerUps();
 	}
 	if (combo == 3) {
-		GivePowerUp(POWERUP_INVISIBILITY, 5, false);
+		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_INVISIBILITY, 5000);
 		UpdatePowerUps();
 	}
 	if (combo == 4) {
-		GivePowerUp(POWERUP_AMMOREGEN, 2, false);
+		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_REGENERATION, 1000);
 		UpdatePowerUps();
 	}
 	if (combo == 5) {
-		GivePowerUp(POWERUP_QUADDAMAGE, 10, false);
+		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_QUADDAMAGE, 5000);
 		UpdatePowerUps();
 	}
 
@@ -3412,12 +3411,7 @@ void idPlayer::ResetCombo() {
 	combo = 0;
 
 	//implement removal of powerups
-	ClearPowerup(2);
-	ClearPowerup(1);
-	ClearPowerup(3);
-	ClearPowerup(7);
-	ClearPowerup(0);
-	UpdatePowerUps();
+	inventory.ClearPowerUps();
 
 	UpdateHudCombo(hud);
 }
@@ -10163,7 +10157,7 @@ void idPlayer::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 				ResetCombo(); 
 			}
 			else if (randomInt == 2) {
-				SetInfluenceLevel(INFLUENCE_LEVEL3); //slow movement! thanks devs, resets on killing an enemy
+				//SetInfluenceLevel(INFLUENCE_LEVEL3); //this literally just stops freezes you in place and lets you do nothing lol
 			}
 			else if (randomInt == 3) {
 				health -= 5; //additonal damage as a debuff
