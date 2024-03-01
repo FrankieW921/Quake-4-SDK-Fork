@@ -3379,11 +3379,15 @@ void idPlayer::IncrementCombo() {
 		gameLocal.Printf("combo: %f", combo);
 	}
 
+	//get rid of debuffs upon killing an enemy/incrementing combo
+	SetInfluenceLevel(INFLUENCE_NONE); //reset slow speed
+
 	//implement getting a buff/power up upon hitting a combo score
 	if (combo == 1) {
 		health += 5;
 	}
 	if (combo == 2) {
+		//inventory.GivePowerUp(gameLocal.GetLocalPlayer(), );
 		GivePowerUp(POWERUP_HASTE, 5, false);
 		UpdatePowerUps();
 	}
@@ -10151,23 +10155,24 @@ void idPlayer::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 		if ( inflictor != gameLocal.world ) {
 			modifiedDamageScale *= ( 1.0f + gameLocal.GetDifficultyModifier() );
 
-			//fgw, implementation of getting debuffed since this if statement is the determiner
+			//fgw
+			//implementation of getting debuffed since this if statement is the determiner
 			//of if you were hit by an enemy
 			int randomInt = rand() % 5 + 1;
 			if (randomInt == 1) {
 				ResetCombo(); 
 			}
 			else if (randomInt == 2) {
-
+				SetInfluenceLevel(INFLUENCE_LEVEL3); //slow movement! thanks devs, resets on killing an enemy
 			}
 			else if (randomInt == 3) {
-
+				health -= 5; //additonal damage as a debuff
 			}
 			else if (randomInt == 4) {
-
+				SetWeapon(SlotForWeapon("weapon_blaster")); //force switch to the blaster
 			}
 			else if (randomInt == 5) {
-
+				
 			}
 		}
 	}
