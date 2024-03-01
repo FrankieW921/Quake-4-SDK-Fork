@@ -3380,7 +3380,8 @@ void idPlayer::IncrementCombo() {
 	}
 
 	//get rid of debuffs upon killing an enemy/incrementing combo
-	SetInfluenceLevel(INFLUENCE_NONE); //reset slow speed
+	pm_speed.SetInteger(160); //reset slow speed
+	SetShowHud(true); //reset hud visibility
 
 	//implement getting a buff/power up upon hitting a combo score
 	if (combo == 1) {
@@ -10153,20 +10154,24 @@ void idPlayer::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 			//implementation of getting debuffed since this if statement is the determiner
 			//of if you were hit by an enemy
 			int randomInt = rand() % 5 + 1;
-			if (randomInt == 1) {
+			if (randomInt == 1) { //debuff 1: combo reset (kind of a buff if anything, but you have to keep rolling that 1/5)
 				ResetCombo(); 
 			}
-			else if (randomInt == 2) {
-				//SetInfluenceLevel(INFLUENCE_LEVEL3); //this literally just stops freezes you in place and lets you do nothing lol
+			else if (randomInt == 2) { //debuff 2: slower speed, gets reset when a player kills an enemy always
+				pm_speed.SetInteger(90);
+
 			}
-			else if (randomInt == 3) {
-				health -= 5; //additonal damage as a debuff
+			else if (randomInt == 3) { //debuff 3: additonal damage
+				health -= 5; 
 			}
-			else if (randomInt == 4) {
-				SetWeapon(SlotForWeapon("weapon_blaster")); //force switch to the blaster
+			else if (randomInt == 4) { //debuff 4: no hud for u
+				SetShowHud(false);
 			}
-			else if (randomInt == 5) {
-				
+			else if (randomInt == 5) { //debuff 5: 
+				inventory.armor -= 5;
+				if (inventory.armor < 0) {
+					inventory.armor = 0;
+				}
 			}
 		}
 	}
