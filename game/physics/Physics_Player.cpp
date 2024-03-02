@@ -1612,6 +1612,7 @@ idPhysics_Player::HasJumped
 ================
 */
 bool idPhysics_Player::HasJumped( void ) const {
+
 	return ( ( current.movementFlags & PMF_JUMPED ) != 0 );
 }
 

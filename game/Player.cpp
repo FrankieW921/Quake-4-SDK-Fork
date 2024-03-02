@@ -3396,7 +3396,7 @@ void idPlayer::IncrementCombo() {
 		UpdatePowerUps();
 	}
 	if (combo == 4) {
-		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_REGENERATION, 1000);
+		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_REGENERATION, 4000);
 		UpdatePowerUps();
 	}
 	if (combo == 5) {
@@ -10167,7 +10167,7 @@ void idPlayer::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 			else if (randomInt == 4) { //debuff 4: no hud for u
 				SetShowHud(false);
 			}
-			else if (randomInt == 5) { //debuff 5: 
+			else if (randomInt == 5) { //debuff 5: additional armor piercing
 				inventory.armor -= 5;
 				if (inventory.armor < 0) {
 					inventory.armor = 0;
