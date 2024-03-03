@@ -649,6 +649,7 @@ public:
 	int	CurrentCombo();
 	void IncrementCombo();
 	void ResetCombo();
+	void ShowDebuff(idUserInterface* hud, int debuff);
 
 	void					UpdateHudStats( idUserInterface *hud );
  	void					UpdateHudAmmo( idUserInterface *hud );

@@ -3388,20 +3388,19 @@ void idPlayer::IncrementCombo() {
 		health += 5;
 	}
 	if (combo == 2) {
-		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_HASTE, 5000);
+		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_HASTE, 500000);
 		UpdatePowerUps();
 	}
 	if (combo == 3) {
-		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_INVISIBILITY, 5000);
+		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_INVISIBILITY, 500000); 
 		UpdatePowerUps();
 	}
 	if (combo == 4) {
-		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_REGENERATION, 4000);
-		UpdatePowerUps();
+		inventory.armor += 10; 
 	}
 	if (combo == 5) {
-		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_QUADDAMAGE, 5000);
-		UpdatePowerUps();
+		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_QUADDAMAGE, 500000); 
+		UpdatePowerUps(); 
 	}
 
 	UpdateHudCombo(hud);
@@ -3415,6 +3414,26 @@ void idPlayer::ResetCombo() {
 	inventory.ClearPowerUps();
 
 	UpdateHudCombo(hud);
+}
+
+void idPlayer::ShowDebuff(idUserInterface* _hud, int debuff) {
+	assert(_hud);
+
+	if (debuff == 1) {
+		_hud->SetStateString( "player_debuff", "Combo Reset");
+	}
+	else if (debuff == 2) {
+		_hud->SetStateString( "player_debuff", "Reduced Speed");
+	}
+	else if (debuff == 3) {
+		_hud->SetStateString( "player_debuff", "-5 HP");
+	}
+	else if (debuff == 4) {
+		_hud->SetStateString( "player_debuff", ":)"); //no hud
+	}
+	else if (debuff == 5) {
+		_hud->SetStateString( "player_debuff", "-5 Armor");
+	}
 }
 
 
@@ -10159,7 +10178,7 @@ void idPlayer::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 			}
 			else if (randomInt == 2) { //debuff 2: slower speed, gets reset when a player kills an enemy always
 				pm_speed.SetInteger(90);
-
+				
 			}
 			else if (randomInt == 3) { //debuff 3: additonal damage
 				health -= 5; 
@@ -10173,6 +10192,7 @@ void idPlayer::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 					inventory.armor = 0;
 				}
 			}
+			ShowDebuff(hud, randomInt); 
 		}
 	}
 	// RAVEN END
