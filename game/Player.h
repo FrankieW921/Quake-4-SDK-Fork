@@ -281,8 +281,9 @@ public:
  		EVENT_MAXEVENTS
  	};
 
-	//fgw, combo declaration
+	//fgw, combo declarations
 	int combo;
+	bool noBuffs;
 
 	friend class idThread;
 
@@ -650,6 +651,7 @@ public:
 	void IncrementCombo();
 	void ResetCombo();
 	void ShowDebuff(idUserInterface* hud, int debuff);
+	void RegiveBuffs();
 
 	void					UpdateHudStats( idUserInterface *hud );
  	void					UpdateHudAmmo( idUserInterface *hud );

@@ -1081,6 +1081,8 @@ idPlayer::idPlayer() {
 
 	//fgw, combo count var
 	combo = 0;
+	//debuff bool for no buffs
+	noBuffs = false;
 
 	alreadyDidTeamAnnouncerSound = false;
 
@@ -3358,7 +3360,7 @@ void idPlayer::UpdateHudCombo(idUserInterface* _hud) {
 
 	assert(_hud);
 
-	combo = CurrentCombo(); 
+	combo = CurrentCombo(); //written with this to match other hud update methods
 
 	_hud->SetStateInt("player_combo", combo);
 
@@ -3371,36 +3373,40 @@ int idPlayer::CurrentCombo() {
 
 //increments combo count and gives a buff/power up when hitting a certain combo value
 void idPlayer::IncrementCombo() {
-	if (combo >= 5) {
+	if (combo >= 10) {
 
 	}
 	else {
 		combo = combo + 1;
-		gameLocal.Printf("combo: %f", combo);
+		//gameLocal.Printf("combo: %f", combo); former debug stuff
 	}
 
 	//get rid of debuffs upon killing an enemy/incrementing combo
-	pm_speed.SetInteger(160); //reset slow speed
 	SetShowHud(true); //reset hud visibility
 
-	//implement getting a buff/power up upon hitting a combo score
+	//get a buff/power up upon hitting a combo score
 	if (combo == 1) {
 		health += 5;
 	}
-	if (combo == 2) {
+	if (combo == 3) { //not written with >= to prevent sfx spam
 		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_HASTE, 500000);
 		UpdatePowerUps();
 	}
-	if (combo == 3) {
+	if (combo == 5) {
 		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_INVISIBILITY, 500000); 
 		UpdatePowerUps();
 	}
-	if (combo == 4) {
-		inventory.armor += 10; 
+	if (combo == 7) {
+		inventory.armor += 15; 
 	}
-	if (combo == 5) {
+	if (combo == 10) {
 		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_QUADDAMAGE, 500000); 
 		UpdatePowerUps(); 
+	}
+
+	if (noBuffs) { //using a bool to prevent sfx spam
+		RegiveBuffs();
+		noBuffs = false;
 	}
 
 	UpdateHudCombo(hud);
@@ -3423,7 +3429,7 @@ void idPlayer::ShowDebuff(idUserInterface* _hud, int debuff) {
 		_hud->SetStateString( "player_debuff", "Combo Reset");
 	}
 	else if (debuff == 2) {
-		_hud->SetStateString( "player_debuff", "Reduced Speed");
+		_hud->SetStateString( "player_debuff", "No Buffs");
 	}
 	else if (debuff == 3) {
 		_hud->SetStateString( "player_debuff", "-5 HP");
@@ -3433,6 +3439,23 @@ void idPlayer::ShowDebuff(idUserInterface* _hud, int debuff) {
 	}
 	else if (debuff == 5) {
 		_hud->SetStateString( "player_debuff", "-5 Armor");
+	}
+}
+
+void idPlayer::RegiveBuffs() { //part of the no buffs debuff
+	int combo = CurrentCombo();
+
+	if (combo >= 3) {
+		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_HASTE, 500000);
+		UpdatePowerUps();
+	}
+	if (combo >= 5) {
+		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_INVISIBILITY, 500000);
+		UpdatePowerUps(); 
+	}
+	if (combo == 10) {
+		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_QUADDAMAGE, 500000);
+		UpdatePowerUps(); 
 	}
 }
 
@@ -10176,9 +10199,9 @@ void idPlayer::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 			if (randomInt == 1) { //debuff 1: combo reset (kind of a buff if anything, but you have to keep rolling that 1/5)
 				ResetCombo(); 
 			}
-			else if (randomInt == 2) { //debuff 2: slower speed, gets reset when a player kills an enemy always
-				pm_speed.SetInteger(90);
-				
+			else if (randomInt == 2) { //debuff 2: lose access to buffs
+				inventory.ClearPowerUps();
+				noBuffs = true;
 			}
 			else if (randomInt == 3) { //debuff 3: additonal damage
 				health -= 5; 
