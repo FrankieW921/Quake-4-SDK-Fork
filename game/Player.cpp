@@ -3416,7 +3416,7 @@ void idPlayer::IncrementCombo() {
 void idPlayer::ResetCombo() {
 	combo = 0;
 
-	//implement removal of powerups
+	//removal of powerups
 	inventory.ClearPowerUps();
 
 	UpdateHudCombo(hud);

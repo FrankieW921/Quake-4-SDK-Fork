@@ -1273,7 +1273,7 @@ idPhysics_Player::CheckJump
 */
 bool idPhysics_Player::CheckJump( void ) {
 	idVec3 addVelocity;
-
+	
 	if ( command.upmove < 10 ) {
 		// not holding jump
 		return false;
@@ -1291,6 +1291,7 @@ bool idPhysics_Player::CheckJump( void ) {
 
 	groundPlane = false;		// jumping away
 	walking = false;
+
 	current.movementFlags |= PMF_JUMP_HELD | PMF_JUMPED;
 
 	addVelocity = 2.0f * maxJumpHeight * -gravityVector;
