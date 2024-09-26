@@ -116,6 +116,8 @@ public:
 class idActor : public idAFEntity_Gibbable {
 public:
 	CLASS_PROTOTYPE( idActor );
+	//fgw, need this boolean to make it so that shooting an enemy thats already dead doesnt increment combo
+	bool comboIncremented;
 
 	int						team;
 	idLinkList<idActor>		teamNode;
