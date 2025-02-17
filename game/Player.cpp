@@ -1079,6 +1079,11 @@ idPlayer::idPlayer
 idPlayer::idPlayer() {
 	memset( &usercmd, 0, sizeof( usercmd ) );
 
+	//fgw, combo count var
+	combo = 0;
+	//debuff bool for no buffs
+	noBuffs = false;
+
 	alreadyDidTeamAnnouncerSound = false;
 
 	doInitWeapon			= false;
@@ -3343,6 +3348,118 @@ bool idPlayer::UserInfoChanged( void ) {
 	return modifiedInfo;
 }
    
+/*
+fgw
+______________________
+COMBO RELATED FUNCTIONS
+_______________________
+idPlayer::UpdateHUDCombo
+*/
+void idPlayer::UpdateHudCombo(idUserInterface* _hud) {
+	int combo;
+
+	assert(_hud);
+
+	combo = CurrentCombo(); //written with this to match other hud update methods
+
+	_hud->SetStateInt("player_combo", combo);
+
+
+}
+//returns current combo count
+int idPlayer::CurrentCombo() {
+	return combo;
+}
+
+//increments combo count and gives a buff/power up when hitting a certain combo value
+void idPlayer::IncrementCombo() {
+	if (combo >= 10) {
+
+	}
+	else {
+		combo = combo + 1;
+		//gameLocal.Printf("combo: %f", combo); former debug stuff
+	}
+
+	//get rid of debuffs upon killing an enemy/incrementing combo
+	SetShowHud(true); //reset hud visibility
+
+	//get a buff/power up upon hitting a combo score
+	if (combo == 1) {
+		health += 5;
+	}
+	if (combo == 3) { //not written with >= to prevent sfx spam
+		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_HASTE, 500000);
+		UpdatePowerUps();
+	}
+	if (combo == 5) {
+		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_INVISIBILITY, 500000); 
+		UpdatePowerUps();
+	}
+	if (combo == 7) {
+		inventory.armor += 15; 
+	}
+	if (combo == 10) {
+		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_QUADDAMAGE, 500000); 
+		UpdatePowerUps(); 
+	}
+
+	if (noBuffs) { //using a bool to prevent sfx spam
+		RegiveBuffs();
+		noBuffs = false;
+	}
+
+	UpdateHudCombo(hud);
+}
+
+//resets combo, one of the debuffs you can recieve upon being hit
+void idPlayer::ResetCombo() {
+	combo = 0;
+
+	//removal of powerups
+	inventory.ClearPowerUps();
+
+	UpdateHudCombo(hud);
+}
+
+void idPlayer::ShowDebuff(idUserInterface* _hud, int debuff) {
+	assert(_hud);
+
+	if (debuff == 1) {
+		_hud->SetStateString( "player_debuff", "Combo Reset");
+	}
+	else if (debuff == 2) {
+		_hud->SetStateString( "player_debuff", "No Buffs");
+	}
+	else if (debuff == 3) {
+		_hud->SetStateString( "player_debuff", "-5 HP");
+	}
+	else if (debuff == 4) {
+		_hud->SetStateString( "player_debuff", ":)"); //no hud
+	}
+	else if (debuff == 5) {
+		_hud->SetStateString( "player_debuff", "-5 Armor");
+	}
+}
+
+void idPlayer::RegiveBuffs() { //part of the no buffs debuff
+	int combo = CurrentCombo();
+
+	if (combo >= 3) {
+		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_HASTE, 500000);
+		UpdatePowerUps();
+	}
+	if (combo >= 5) {
+		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_INVISIBILITY, 500000);
+		UpdatePowerUps(); 
+	}
+	if (combo == 10) {
+		inventory.GivePowerUp(gameLocal.GetLocalPlayer(), POWERUP_QUADDAMAGE, 500000);
+		UpdatePowerUps(); 
+	}
+}
+
+
 /*
 ===============
 idPlayer::UpdateHudAmmo
@@ -10074,6 +10191,31 @@ void idPlayer::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 	if ( !gameLocal.isMultiplayer ) {
 		if ( inflictor != gameLocal.world ) {
 			modifiedDamageScale *= ( 1.0f + gameLocal.GetDifficultyModifier() );
+
+			//fgw
+			//implementation of getting debuffed since this if statement is the determiner
+			//of if you were hit by an enemy
+			int randomInt = rand() % 5 + 1;
+			if (randomInt == 1) { //debuff 1: combo reset (kind of a buff if anything, but you have to keep rolling that 1/5)
+				ResetCombo(); 
+			}
+			else if (randomInt == 2) { //debuff 2: lose access to buffs
+				inventory.ClearPowerUps();
+				noBuffs = true;
+			}
+			else if (randomInt == 3) { //debuff 3: additonal damage
+				health -= 5; 
+			}
+			else if (randomInt == 4) { //debuff 4: no hud for u
+				SetShowHud(false);
+			}
+			else if (randomInt == 5) { //debuff 5: additional armor piercing
+				inventory.armor -= 5;
+				if (inventory.armor < 0) {
+					inventory.armor = 0;
+				}
+			}
+			ShowDebuff(hud, randomInt); 
 		}
 	}
 	// RAVEN END

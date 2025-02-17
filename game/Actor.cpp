@@ -417,6 +417,8 @@ idActor::idActor( void )
 {
 	viewAxis.Identity();
 
+	comboIncremented = false;
+
 	use_combat_bbox		= false;
 	head				= NULL;
 
@@ -2487,7 +2489,7 @@ void idActor::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &dir
 	if ( damage > 0 ) {
 		int oldHealth = health;
 		AdjustHealthByDamage ( damage );
-		if ( health <= 0 ) {
+		if ( health <= 0 ) { //enemy is killed OR dead, health goes into negatives with a lot of old id games for some functionality
 
 			//allow for quick burning
 			if (damageDef->GetFloat( "quickburn", "0" ) && !spawnArgs.GetFloat("no_quickburn", "0"))	{
@@ -2509,6 +2511,13 @@ void idActor::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &dir
 				}
 			}
 			Killed( inflictor, attacker, damage, dir, location );
+			//fgw, when an enemy dies, increment combo count
+			if ((idPlayer*)attacker == gameLocal.GetLocalPlayer() && comboIncremented == false) {
+				gameLocal.GetLocalPlayer()->IncrementCombo();
+				comboIncremented = true;
+			}
+
+
 			gibbed = saveGibbed;
 			if ( health < -20 )
 			{

@@ -196,6 +196,7 @@ class idInventory {
 public:
 	int						maxHealth;
 	int						weapons;
+
 // RITUAL BEGIN
 // squirrel: Mode-agnostic buymenus
 	int						carryOverWeapons;
@@ -279,6 +280,10 @@ public:
 		EVENT_EMOTE,
  		EVENT_MAXEVENTS
  	};
+
+	//fgw, combo declarations
+	int combo;
+	bool noBuffs;
 
 	friend class idThread;
 
@@ -639,6 +644,15 @@ public:
 #ifdef _XENON
 	void					ResetHUDWeaponSwitch( void );
 #endif
+
+	//fgw, combo function declarations
+	void UpdateHudCombo(idUserInterface* hud);
+	int	CurrentCombo();
+	void IncrementCombo();
+	void ResetCombo();
+	void ShowDebuff(idUserInterface* hud, int debuff);
+	void RegiveBuffs();
+
 	void					UpdateHudStats( idUserInterface *hud );
  	void					UpdateHudAmmo( idUserInterface *hud );
  	void					ShowTip( const char *title, const char *tip, bool autoHide );
